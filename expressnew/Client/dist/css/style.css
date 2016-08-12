@@ -1,0 +1,45 @@
+#row1{
+ padding-bottom: : 20px;
+}
+
+#searchId{
+  width:400px;
+ padding-top: 30px;
+
+}
+
+#row2{
+ padding-top: 20px;
+}
+
+h2 {
+ padding-top: 20px;
+}
+image {
+ padding-top: 30px;
+}
+
+#glyphSearch{
+float:right;
+position:absolute;
+height:35px;
+}
+
+#userDrop{
+ padding-top: 20px;
+ font-size: 30px;
+
+}
+h5{
+  color: black;
+  height:10px;
+}
+.active{
+  color: red;
+}
+
+.mytableClass , tr,td,th {
+  width : 500px;
+  border: 1px solid black;
+
+}
