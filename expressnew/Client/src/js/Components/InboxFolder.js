@@ -1,6 +1,7 @@
 var React=require('react');
 var Render = require('react-dom');
 var Reply = require("./Reply.js");
+var Save = require("./Save.js");
 var dataReceived = false;
 var counter = 1;
 var InboxFolder = React.createClass({
@@ -40,7 +41,7 @@ componentDidMount: function () {
                 console.log(data2);
                 console.log("teek hai bhai latest");
                 console.log(data2.payload.body);
-                
+
                 for(var i =0;i<data2.payload.headers.length;i++){
 			               if(data2.payload.headers[i].name == 'From'){
 				                  fromName = data2.payload.headers[i].value;
@@ -94,29 +95,52 @@ if (this.state.rowInformation ) {
       </tr>
       </thead>
       <tbody>
-
+      {loginButton}
       </tbody>
     </table>
     </div>);
   }
 });
 
+var callButton = false;
 var OneSeparateList = React.createClass({
   getInitialState:function(){
-    return({showModal : false});
+    return({showModal : false,callButton : false});
   },
   handleMessageClick : function(){
     this.setState({showModal : true});
   },
+  saveMessage : function(){
+    var from = this.props.data.fromname;
+    var receivedDate = this.props.data.datareceived;
+    var subjectof = (this.props.data.subjectofmaildata).replace(/\r?\n|\r/g,' ');
+    var saveDetail = {frominfo :from,date : receivedDate,subject : subjectof };
+    console.log("Inside save message");
+    console.log(JSON.stringify(saveDetail));
+    $.ajax({
+      url : 'http://localhost:8080/send/',
+      dataType : 'json',
+      data : saveDetail,
+      type : 'POST',
+      async : false,
+      success : function(data){
+        console.log(data.response);
+      },
+      error : function(xhr, status, err){
+        console.log("Inside save error");
+      }
+    });
+  },
   render:function(){
     console.log("inside one separate new");
     console.log(this.props.data);
-    var subjectof = (this.props.data.subjectofmaildata).replace(/\r?\n|\r/g,' ')
+    var subjectof = (this.props.data.subjectofmaildata).replace(/\r?\n|\r/g,' ');
     return(<div>
           <tr>
           <td>{this.props.data.fromname}</td>
           <td><a href="#myModal7" data-toggle="modal" onClick={this.handleMessageClick} >{subjectof}</a></td>
           {this.state.showModal ? <Reply data = {this.props.data}/>:null}
+          <td><button className="btn btn-success" onClick={this.saveMessage}>Save</button></td>
           <td>{this.props.data.datareceived}</td>
           </tr>
       </div>);

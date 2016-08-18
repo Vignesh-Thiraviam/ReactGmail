@@ -25,9 +25,11 @@ var MainComponent = React.createClass({
 
   render:function(){
     var loginButton='';
+    var callRule ='';
     var drafts ='';
     if (this.state.inStockOnly) {
 		  loginButton = <InboxFolder />;
+      callRule = <Rules />
       drafts =<Drafts />;
 		}
     return (
@@ -53,7 +55,7 @@ var MainComponent = React.createClass({
       <div className="row" id="row0">
       <div className="col-md-2" id="menu">
       <Compose/>
-	  <Rules/>
+	    {callRule}
       </div>
       <div className="col-md-10" id="main">
 
@@ -61,7 +63,7 @@ var MainComponent = React.createClass({
         <div className="col-12">
 			<div className="tabbable">
 			  <ul className="nav nav-tabs">
-				<li className="active"><a href="#inboxTab" data-toggle="tab">Inbox72</a></li>
+				<li className="active"><a href="#inboxTab" data-toggle="tab">Inbox85</a></li>
 				<li><a href="#sentTab" data-toggle="tab">SentBox30</a></li>
         <li><a href="#draftsTab" data-toggle="tab">Drafts</a></li>
         <li><a href="#trashTab" data-toggle="tab">Trash</a></li>

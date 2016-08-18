@@ -2,10 +2,6 @@ var  React=require("react");
 var Compose=React.createClass(
 {
   sendMessage : function(){
-    alert("hello33");
-    alert(this.refs.toMailId.value);
-
-
     var accessToken = localStorage.getItem('gToken');
 		var email = '';
 		var Headers = {'To' : this.refs.toMailId.value,

@@ -20907,10 +20907,6 @@ var  React=require("react");
 var Compose=React.createClass(
 {displayName: "Compose",
   sendMessage : function(){
-    alert("hello33");
-    alert(this.refs.toMailId.value);
-
-
     var accessToken = localStorage.getItem('gToken');
 		var email = '';
 		var Headers = {'To' : this.refs.toMailId.value,
@@ -21355,6 +21351,7 @@ module.exports=GrandChild2;
 var React=require('react');
 var Render = require('react-dom');
 var Reply = require("./Reply.js");
+var Save = require("./Save.js");
 var dataReceived = false;
 var counter = 1;
 var InboxFolder = React.createClass({displayName: "InboxFolder",
@@ -21394,7 +21391,7 @@ componentDidMount: function () {
                 console.log(data2);
                 console.log("teek hai bhai latest");
                 console.log(data2.payload.body);
-                
+
                 for(var i =0;i<data2.payload.headers.length;i++){
 			               if(data2.payload.headers[i].name == 'From'){
 				                  fromName = data2.payload.headers[i].value;
@@ -21447,37 +21444,60 @@ if (this.state.rowInformation ) {
         React.createElement("td", null, "Date")
       )
       ), 
-      React.createElement("tbody", null
-
+      React.createElement("tbody", null, 
+      loginButton
       )
     )
     ));
   }
 });
 
+var callButton = false;
 var OneSeparateList = React.createClass({displayName: "OneSeparateList",
   getInitialState:function(){
-    return({showModal : false});
+    return({showModal : false,callButton : false});
   },
   handleMessageClick : function(){
     this.setState({showModal : true});
   },
+  saveMessage : function(){
+    var from = this.props.data.fromname;
+    var receivedDate = this.props.data.datareceived;
+    var subjectof = (this.props.data.subjectofmaildata).replace(/\r?\n|\r/g,' ');
+    var saveDetail = {frominfo :from,date : receivedDate,subject : subjectof };
+    console.log("Inside save message");
+    console.log(JSON.stringify(saveDetail));
+    $.ajax({
+      url : 'http://localhost:8080/send/',
+      dataType : 'json',
+      data : saveDetail,
+      type : 'POST',
+      async : false,
+      success : function(data){
+        console.log(data.response);
+      },
+      error : function(xhr, status, err){
+        console.log("Inside save error");
+      }
+    });
+  },
   render:function(){
     console.log("inside one separate new");
     console.log(this.props.data);
-    var subjectof = (this.props.data.subjectofmaildata).replace(/\r?\n|\r/g,' ')
+    var subjectof = (this.props.data.subjectofmaildata).replace(/\r?\n|\r/g,' ');
     return(React.createElement("div", null, 
           React.createElement("tr", null, 
           React.createElement("td", null, this.props.data.fromname), 
           React.createElement("td", null, React.createElement("a", {href: "#myModal7", "data-toggle": "modal", onClick: this.handleMessageClick}, subjectof)), 
           this.state.showModal ? React.createElement(Reply, {data: this.props.data}):null, 
+          React.createElement("td", null, React.createElement("button", {className: "btn btn-success", onClick: this.saveMessage}, "Save")), 
           React.createElement("td", null, this.props.data.datareceived)
           )
       ));
   }
 });
 module.exports=InboxFolder;
-},{"./Reply.js":184,"react":174,"react-dom":29}],184:[function(require,module,exports){
+},{"./Reply.js":184,"./Save.js":186,"react":174,"react-dom":29}],184:[function(require,module,exports){
 var  React=require("react");
 var Reply=React.createClass(
 {displayName: "Reply",
@@ -21535,8 +21555,34 @@ var Reply=React.createClass(
 module.exports=Reply;
 },{"react":174}],185:[function(require,module,exports){
 var  React=require("react");
-var Compose=React.createClass(
-{displayName: "Compose",
+var rows=[];
+var Rules=React.createClass(
+{displayName: "Rules",
+  getInitialState : function(){
+    return({row1:[]});
+  },
+
+  componentDidMount : function(){
+    console.log("Inside my rules component new");
+    $.ajax({
+      url : 'http://localhost:8080/send/',
+      dataType: 'json',
+      contentType : 'application/json',
+      type: 'GET',
+      async: false,
+      success: function(data){
+        console.log(data);
+        for(var i=0;i<data.length;i++){
+          console.log(data[i]);
+          rows.push(React.createElement("tr", null, React.createElement("td", null, data[i].date), React.createElement("td", null, data[i].fromname), React.createElement("td", null, data[i].subject)));
+        }
+      },
+      error : function(err){
+        console.log("Hi");
+      }
+    });
+    this.setState({row1 :rows });
+  },
   render:function()
   {
     return (
@@ -21544,7 +21590,7 @@ var Compose=React.createClass(
       React.createElement("div", {className: "container"}, 
       React.createElement("div", {className: "inbox-body"}, 
       React.createElement("button", {className: "btn btn-primary"}, React.createElement("a", {href: "#myModal3", "data-toggle": "modal", title: "Compose", className: "btn btn-compose"}, 
-        React.createElement("h5", null, " Set Rules ")
+        React.createElement("h5", null, " Set Rules7 ")
       )), 
       React.createElement("div", {"aria-hidden": "true", "aria-labelledby": "myModalLabel", role: "dialog", tabIndex: "-1", id: "myModal3", className: "modal fade"}, 
       React.createElement("div", {className: "modal-dialog"}, 
@@ -21552,20 +21598,14 @@ var Compose=React.createClass(
 
       React.createElement("div", {className: "modal-header"}, 
     React.createElement("button", {"aria-hidden": "true", "data-dismiss": "modal", className: "close", type: "button"}), 
-    React.createElement("h4", {className: "modal-title"}, "Set Rules")
+    React.createElement("h4", {className: "modal-title"}, "Set Rules9")
       ), 
 
      React.createElement("form", null, 
-                 React.createElement("div", {className: "form-group"}, 
-                   React.createElement("label", {for: "exampleInputEmail1"}, "Email address"), 
-                   React.createElement("input", {type: "email", className: "form-control", id: "exampleInputEmail1", placeholder: "Enter email"})
-                 ), 
-                 React.createElement("div", {className: "form-group"}, 
-                   React.createElement("label", {for: "createfolder"}, "Folder Name"), 
-                   React.createElement("input", {type: "create", className: "form-control", id: "createfolder", placeholder: "create"})
-                 ), 
-             React.createElement("button", {type: "submit", className: "btn btn-default"}, "Submit")
-               )
+     React.createElement("table", null, 
+     this.state.row1
+     )
+      )
 
       )
       )
@@ -21576,8 +21616,38 @@ var Compose=React.createClass(
   }
 
 })
-module.exports=Compose;
+module.exports=Rules;
 },{"react":174}],186:[function(require,module,exports){
+var React = require('react');
+var Save = React.createClass({displayName: "Save",
+  saveMessage : function(){
+    var from = this.props.data.fromname;
+    var receivedDate = this.props.data.datareceived;
+    var subjectof = (this.props.data.subjectofmaildata).replace(/\r?\n|\r/g,' ');
+    var saveDetail = {frominfo :from,date : receivedDate,subject : subjectof };
+    console.log("Inside save message");
+    console.log(JSON.stringify(saveDetail));
+    $.ajax({
+      url : 'http://localhost:8080/send/',
+      dataType : 'json',
+      data : JSON.stringify(saveDetail),
+      type : 'POST',
+      async : false,
+      success : function(data){
+        console.log("inside Success");
+        console.log(data);
+      },
+      error : function(xhr, status, err){
+        console.log("Inside save error");
+      }
+    });
+  },
+  render : function(){
+    return(React.createElement("div", null, this.saveMessage));
+  }
+});
+module.exports=Save;
+},{"react":174}],187:[function(require,module,exports){
 var React = require('react');
 var {render}=require('react-dom');
 
@@ -21634,7 +21704,7 @@ var TrashComponent = React.createClass({displayName: "TrashComponent",
   }
 });
 module.exports=TrashComponent;
-},{"react":174,"react-dom":29}],187:[function(require,module,exports){
+},{"react":174,"react-dom":29}],188:[function(require,module,exports){
 var React = require('react');
 var {render}=require('react-dom');
 var GmailApp = require("./Components/GmailApp.js");
@@ -21662,9 +21732,11 @@ var MainComponent = React.createClass({displayName: "MainComponent",
 
   render:function(){
     var loginButton='';
+    var callRule ='';
     var drafts ='';
     if (this.state.inStockOnly) {
 		  loginButton = React.createElement(InboxFolder, null);
+      callRule = React.createElement(Rules, null)
       drafts =React.createElement(Drafts, null);
 		}
     return (
@@ -21690,7 +21762,7 @@ var MainComponent = React.createClass({displayName: "MainComponent",
       React.createElement("div", {className: "row", id: "row0"}, 
       React.createElement("div", {className: "col-md-2", id: "menu"}, 
       React.createElement(Compose, null), 
-	  React.createElement(Rules, null)
+	    callRule
       ), 
       React.createElement("div", {className: "col-md-10", id: "main"}, 
 
@@ -21698,7 +21770,7 @@ var MainComponent = React.createClass({displayName: "MainComponent",
         React.createElement("div", {className: "col-12"}, 
 			React.createElement("div", {className: "tabbable"}, 
 			  React.createElement("ul", {className: "nav nav-tabs"}, 
-				React.createElement("li", {className: "active"}, React.createElement("a", {href: "#inboxTab", "data-toggle": "tab"}, "Inbox72")), 
+				React.createElement("li", {className: "active"}, React.createElement("a", {href: "#inboxTab", "data-toggle": "tab"}, "Inbox85")), 
 				React.createElement("li", null, React.createElement("a", {href: "#sentTab", "data-toggle": "tab"}, "SentBox30")), 
         React.createElement("li", null, React.createElement("a", {href: "#draftsTab", "data-toggle": "tab"}, "Drafts")), 
         React.createElement("li", null, React.createElement("a", {href: "#trashTab", "data-toggle": "tab"}, "Trash"))
@@ -21730,4 +21802,4 @@ var MainComponent = React.createClass({displayName: "MainComponent",
   }
 });
 render(React.createElement(MainComponent, null),document.getElementById('main_content'));
-},{"./Components/ChildComponent2.js":175,"./Components/ChildComponents.js":176,"./Components/Compose.js":177,"./Components/Drafts.js":178,"./Components/DraftsComponent.js":179,"./Components/GmailApp.js":180,"./Components/InboxFolder.js":183,"./Components/Rules.js":185,"./Components/TrashComponent.js":186,"react":174,"react-dom":29}]},{},[187]);
+},{"./Components/ChildComponent2.js":175,"./Components/ChildComponents.js":176,"./Components/Compose.js":177,"./Components/Drafts.js":178,"./Components/DraftsComponent.js":179,"./Components/GmailApp.js":180,"./Components/InboxFolder.js":183,"./Components/Rules.js":185,"./Components/TrashComponent.js":187,"react":174,"react-dom":29}]},{},[188]);
