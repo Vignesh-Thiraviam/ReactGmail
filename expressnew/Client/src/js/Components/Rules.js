@@ -18,7 +18,8 @@ var Rules=React.createClass(
         console.log(data);
         for(var i=0;i<data.length;i++){
           console.log(data[i]);
-          rows.push(<tr><td>{data[i].date}</td><td>{data[i].fromname}</td><td>{data[i].subject}</td></tr>);
+        //  rows.push(<tr><td>{data[i].date}</td><td>{data[i].fromname}</td><td>{data[i].subject}</td></tr>);
+        rows.push(<SingleMessage data={data[i]} />);
         }
       },
       error : function(err){
@@ -59,5 +60,36 @@ var Rules=React.createClass(
   );
   }
 
-})
+});
+
+
+var SingleMessage = React.createClass({
+  handleDeleteClick : function(e){
+    e.preventDefault;
+    var id1={ id :this.props.data._id};
+    console.log("Idsssss is"+id1);
+    $.ajax({
+      url : 'http://localhost:8080/send/',
+      dataType: 'json',
+      data : JSON.stringify(id1),
+      contentType : 'application/json',
+      type: 'DELETE',
+      async: false,
+      success : function(){
+        console.log("Inside success of delete");
+      },
+      error : function(err){
+        console.log("Inside error of delete");
+      }
+    });
+  },
+  render : function(){
+    return(<tr>
+          <td>{this.props.data.date}</td>
+          <td>{this.props.data.fromname}</td>
+          <td>{this.props.data.subject}</td>
+          <td><button className="btn btn-warning" onClick = {this.handleDeleteClick}>Delete</button></td>
+          </tr>);
+  }
+});
 module.exports=Rules;

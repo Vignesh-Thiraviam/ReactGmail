@@ -63,7 +63,7 @@ var MainComponent = React.createClass({
         <div className="col-12">
 			<div className="tabbable">
 			  <ul className="nav nav-tabs">
-				<li className="active"><a href="#inboxTab" data-toggle="tab">Inbox85</a></li>
+				<li className="active"><a href="#inboxTab" data-toggle="tab">Inbox92</a></li>
 				<li><a href="#sentTab" data-toggle="tab">SentBox30</a></li>
         <li><a href="#draftsTab" data-toggle="tab">Drafts</a></li>
         <li><a href="#trashTab" data-toggle="tab">Trash</a></li>

@@ -21574,7 +21574,8 @@ var Rules=React.createClass(
         console.log(data);
         for(var i=0;i<data.length;i++){
           console.log(data[i]);
-          rows.push(React.createElement("tr", null, React.createElement("td", null, data[i].date), React.createElement("td", null, data[i].fromname), React.createElement("td", null, data[i].subject)));
+        //  rows.push(<tr><td>{data[i].date}</td><td>{data[i].fromname}</td><td>{data[i].subject}</td></tr>);
+        rows.push(React.createElement(SingleMessage, {data: data[i]}));
         }
       },
       error : function(err){
@@ -21615,7 +21616,38 @@ var Rules=React.createClass(
   );
   }
 
-})
+});
+
+
+var SingleMessage = React.createClass({displayName: "SingleMessage",
+  handleDeleteClick : function(e){
+    e.preventDefault;
+    var id1={ id :this.props.data._id};
+    console.log("Idsssss is"+id1);
+    $.ajax({
+      url : 'http://localhost:8080/send/',
+      dataType: 'json',
+      data : JSON.stringify(id1),
+      contentType : 'application/json',
+      type: 'DELETE',
+      async: false,
+      success : function(){
+        console.log("Inside success of delete");
+      },
+      error : function(err){
+        console.log("Inside error of delete");
+      }
+    });
+  },
+  render : function(){
+    return(React.createElement("tr", null, 
+          React.createElement("td", null, this.props.data.date), 
+          React.createElement("td", null, this.props.data.fromname), 
+          React.createElement("td", null, this.props.data.subject), 
+          React.createElement("td", null, React.createElement("button", {className: "btn btn-warning", onClick: this.handleDeleteClick}, "Delete"))
+          ));
+  }
+});
 module.exports=Rules;
 },{"react":174}],186:[function(require,module,exports){
 var React = require('react');
@@ -21770,7 +21802,7 @@ var MainComponent = React.createClass({displayName: "MainComponent",
         React.createElement("div", {className: "col-12"}, 
 			React.createElement("div", {className: "tabbable"}, 
 			  React.createElement("ul", {className: "nav nav-tabs"}, 
-				React.createElement("li", {className: "active"}, React.createElement("a", {href: "#inboxTab", "data-toggle": "tab"}, "Inbox85")), 
+				React.createElement("li", {className: "active"}, React.createElement("a", {href: "#inboxTab", "data-toggle": "tab"}, "Inbox92")), 
 				React.createElement("li", null, React.createElement("a", {href: "#sentTab", "data-toggle": "tab"}, "SentBox30")), 
         React.createElement("li", null, React.createElement("a", {href: "#draftsTab", "data-toggle": "tab"}, "Drafts")), 
         React.createElement("li", null, React.createElement("a", {href: "#trashTab", "data-toggle": "tab"}, "Trash"))
