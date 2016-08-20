@@ -59,7 +59,10 @@ router.delete('/', function(req, res, next) {
 });
 
 router.put('/', function(req, res, next) {
-  console.log("Oru valia inside server get");
+  console.log("Oru valia inside server put");
+  console.log(req.body.subject);
+  console.log(req.body.id);
+  
   bear.findById(req.body.id, function(err, bear) {
 
 			if (err)

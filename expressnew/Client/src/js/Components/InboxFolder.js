@@ -12,7 +12,7 @@ componentDidMount: function () {
 	var messageIdList = [];
 	var accessToken = localStorage.getItem('gToken');
     $.ajax({
-       url: 'https://www.googleapis.com/gmail/v1/users/thiraviammvignesh%40gmail.com/messages?maxResults=2&key={AIzaSyDpisvp_nlccXBJ61h0nBZu2Q0qcArB4fg}',
+       url: 'https://www.googleapis.com/gmail/v1/users/thiraviammvignesh%40gmail.com/messages?maxResults=10&key={AIzaSyDpisvp_nlccXBJ61h0nBZu2Q0qcArB4fg}',
        dataType: 'json',
        type: 'GET',
        beforeSend: function (request)

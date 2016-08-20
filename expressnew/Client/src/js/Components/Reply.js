@@ -4,7 +4,6 @@ var Reply=React.createClass(
   render:function()
   {
     console.log("inside reply new");
-    alert("inside reply new");
     console.log("data here");
     console.log(this.props.data);
     return (

@@ -1,5 +1,5 @@
 var  React=require("react");
-var rows=[];
+
 var Rules=React.createClass(
 {
   getInitialState : function(){
@@ -7,6 +7,7 @@ var Rules=React.createClass(
   },
 
   componentDidMount : function(){
+    var rows=[];
     console.log("Inside my rules component new");
     $.ajax({
       url : 'http://localhost:8080/send/',
@@ -18,7 +19,6 @@ var Rules=React.createClass(
         console.log(data);
         for(var i=0;i<data.length;i++){
           console.log(data[i]);
-        //  rows.push(<tr><td>{data[i].date}</td><td>{data[i].fromname}</td><td>{data[i].subject}</td></tr>);
         rows.push(<SingleMessage data={data[i]} />);
         }
       },
@@ -32,40 +32,24 @@ var Rules=React.createClass(
   {
     return (
 
-      <div className="container">
-      <div className="inbox-body">
-      <button className="btn btn-primary"><a href="#myModal3" data-toggle="modal"  title="Compose" className="btn btn-compose">
-        <h5> Set Rules7 </h5>
-      </a></button>
-      <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabIndex="-1" id="myModal3" className="modal fade">
-      <div className="modal-dialog">
-      <div className="modal-content">
-
-      <div className="modal-header">
-    <button aria-hidden="true" data-dismiss="modal" className="close" type="button"></button>
-    <h4 className="modal-title">Set Rules9</h4>
-      </div>
-
-     <form>
-     <table>
-     {this.state.row1}
-     </table>
-      </form>
-
-      </div>
-      </div>
-      </div>
-      </div>
+      <div className="container22">
+      <table>
+      {this.state.row1}
+      </table>
       </div>
   );
   }
 
 });
 
-
 var SingleMessage = React.createClass({
+  getInitialState : function(){
+    return({showUpdate : false});
+  },
+  handleUpdateClick : function(){
+    this.setState({showUpdate : true});
+  },
   handleDeleteClick : function(e){
-    e.preventDefault;
     var id1={ id :this.props.data._id};
     console.log("Idsssss is"+id1);
     $.ajax({
@@ -89,7 +73,66 @@ var SingleMessage = React.createClass({
           <td>{this.props.data.fromname}</td>
           <td>{this.props.data.subject}</td>
           <td><button className="btn btn-warning" onClick = {this.handleDeleteClick}>Delete</button></td>
+          <td><a href="#myModal22" data-toggle="modal" onClick={this.handleUpdateClick} >Update</a></td>
+          {this.state.showUpdate ? <Update  data = {this.props.data}/>:null}
           </tr>);
+  }
+});
+
+var Update = React.createClass({
+  updateMessage : function(e){
+    e.preventDefault;
+    var sendData = {id:this.props.data._id,subject : this.refs.updateFSubjectPlace.value};
+    console.log(sendData);
+    $.ajax({
+      url : 'http://localhost:8080/send/',
+      dataType: 'json',
+      data : {id:this.props.data._id,subject : this.refs.updateFSubjectPlace.value},
+      type: 'PUT',
+      success : function(){
+        console.log("Inside success of update");
+      },
+      error : function(err){
+        console.log("Inside error of update");
+      }
+    });
+
+  },
+  render:function()
+  {
+    console.log("inside Update new 55");
+    console.log("data here");
+    console.log(this.props.data);
+    return (
+      <div className="modal fade" id="myModal22">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+
+                <h4 className="modal-title">Update Local Message</h4>
+              </div>
+              <div className="modal-body">
+                <form className="form-horizontal">
+                  <div className="form-group">
+                    <div className="col-lg-10">
+                      <input type="text" ref = "updateFromNamePlace" defaultValue={this.props.data.fromname} className="form-control" id="inputName" name="Title"/>
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <div className="col-lg-10">
+                      <input type="text" ref = "updateFSubjectPlace" defaultValue={this.props.data.subject} className="form-control" id="inputEmail" name="Year"/>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div className="modal-footer">
+
+                <button className="btn btn-primary" onClick={this.updateMessage} data-dismiss="modal">Update</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
   }
 });
 module.exports=Rules;
